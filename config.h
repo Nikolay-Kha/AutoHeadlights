@@ -43,7 +43,7 @@
 /* -------------------------------- CONFIG ---------------------------------*/
 // These thresholds should be find out experimentally. Use debug output.
 #define ACC_VOLTAGE_THRESHOLD 718 // 13.5V
-#define LIGHT_SENSOR_THRESHOLD 512
+#define LIGHT_SENSOR_THRESHOLD 650
 #define ENGINE_START_DETECT_DELAY_MS 3000
 #define HEADLIGHTS_SWITCH_DELAY_MS 30000
 #define DEBUG // enable messages via UART
