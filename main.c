@@ -67,6 +67,7 @@ void main() {
 	uint8_t prev_state;
 	uint8_t side_lights;
 	uint8_t drl;
+	uint16_t light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DEFAULT + LIGHT_SENSOR_THRESHOLD_DELTA;
 	init_interfaces();
 	GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_PP_HIGH_FAST); // TODO remove me
 
@@ -98,17 +99,18 @@ void main() {
 
 	// main loop
 	adc_average = get_adc_value(LIGHT_SENSOR_ADC);
-	headlights_on = adc_average > LIGHT_SENSOR_THRESHOLD;
+	// adc_average is 0 in sunny day and 1023 in darkness night
+	headlights_on = adc_average > light_sensor_threshold;
 	prev_state = headlights_on;
 	while (1) {
 		// low pass filter
 		low_pass_filter(&adc_average, get_adc_value(LIGHT_SENSOR_ADC), 1);
-		if (prev_state !=  (adc_average > LIGHT_SENSOR_THRESHOLD)) {
+		if (prev_state !=  (adc_average > light_sensor_threshold)) {
 			tick_counter = TIM1_GetCounter();
 		}
-		prev_state = adc_average > LIGHT_SENSOR_THRESHOLD;
+		prev_state = adc_average > light_sensor_threshold;
 		if (TIM1_GetCounter() - tick_counter > HEADLIGHTS_SWITCH_DELAY_MS) {
-			headlights_on = adc_average > LIGHT_SENSOR_THRESHOLD;
+			headlights_on = adc_average > light_sensor_threshold;
 		}
 
 		// check side lights to turn on/off DRL
@@ -124,9 +126,12 @@ void main() {
 		if (headlights_on) {
 			// turn on headlights
 			GPIO_WriteLow(HEADLIGHTS_PORT, HEADLIGHTS_PIN);
+			light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DEFAULT;
 		} else {
 			// turn off headlights
 			GPIO_WriteHigh(HEADLIGHTS_PORT, HEADLIGHTS_PIN);
+			// move threshold to implement hysteresis
+			light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DEFAULT + LIGHT_SENSOR_THRESHOLD_DELTA;
 		}
 		if (++i > NUMBER_OF_CYCLE_TO_DISPLAY) {
 			blink_led();

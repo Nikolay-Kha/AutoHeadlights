@@ -43,7 +43,11 @@
 /* -------------------------------- CONFIG ---------------------------------*/
 // These thresholds should be find out experimentally. Use debug output.
 #define ACC_VOLTAGE_THRESHOLD 718 // 13.5V
-#define LIGHT_SENSOR_THRESHOLD 650
+#define LIGHT_SENSOR_THRESHOLD_DEFAULT 200 // threshold for morning(when night changes to day)
+#define LIGHT_SENSOR_THRESHOLD_DELTA 200 // sum of this and default threshold works on evenings(when day changes to night)
+#if LIGHT_SENSOR_THRESHOLD_DEFAULT + LIGHT_SENSOR_THRESHOLD_DELTA >= 1022
+#error LIGHT_SENSOR_THRESHOLD_DELTA or LIGHT_SENSOR_THRESHOLD_DEFAULT is too big
+#endif
 #define ENGINE_START_DETECT_DELAY_MS 3000
 #define HEADLIGHTS_SWITCH_DELAY_MS 30000
 #define DEBUG // enable messages via UART
