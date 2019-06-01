@@ -67,7 +67,7 @@ void main() {
 	uint8_t prev_state;
 	uint8_t side_lights;
 	uint8_t drl;
-	uint16_t light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DEFAULT + LIGHT_SENSOR_THRESHOLD_DELTA;
+	uint16_t light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT;
 	init_interfaces();
 	GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_PP_HIGH_FAST); // TODO remove me
 
@@ -126,12 +126,12 @@ void main() {
 		if (headlights_on) {
 			// turn on headlights
 			GPIO_WriteLow(HEADLIGHTS_PORT, HEADLIGHTS_PIN);
-			light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DEFAULT;
+			light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_NIGHT_TO_DAY;
 		} else {
 			// turn off headlights
 			GPIO_WriteHigh(HEADLIGHTS_PORT, HEADLIGHTS_PIN);
 			// move threshold to implement hysteresis
-			light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DEFAULT + LIGHT_SENSOR_THRESHOLD_DELTA;
+			light_sensor_threshold = LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT;
 		}
 		if (++i > NUMBER_OF_CYCLE_TO_DISPLAY) {
 			blink_led();

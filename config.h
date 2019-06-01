@@ -43,13 +43,34 @@
 /* -------------------------------- CONFIG ---------------------------------*/
 // These thresholds should be find out experimentally. Use debug output.
 #define ACC_VOLTAGE_THRESHOLD 718 // 13.5V
-#define LIGHT_SENSOR_THRESHOLD_DEFAULT 200 // threshold for morning(when night changes to day)
-#define LIGHT_SENSOR_THRESHOLD_DELTA 200 // sum of this and default threshold works on evenings(when day changes to night)
-#if LIGHT_SENSOR_THRESHOLD_DEFAULT + LIGHT_SENSOR_THRESHOLD_DELTA >= 1022
-#error LIGHT_SENSOR_THRESHOLD_DELTA or LIGHT_SENSOR_THRESHOLD_DEFAULT is too big
-#endif
+#define LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT 400 // threshold for evening
+#define LIGHT_SENSOR_THRESHOLD_NIGHT_TO_DAY 75 // threshold for morning (hysteresis)
 #define ENGINE_START_DETECT_DELAY_MS 3000
 #define HEADLIGHTS_SWITCH_DELAY_MS 30000
+#if ACC_VOLTAGE_THRESHOLD <= 0
+#error ACC_VOLTAGE_THRESHOLD is too small
+#endif
+#if ACC_VOLTAGE_THRESHOLD >= 1023
+#error ACC_VOLTAGE_THRESHOLD is too big
+#endif
+#if LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT <= 0
+#error LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT is too small
+#endif
+#if LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT >= 1023
+#error LIGHT_SENSOR_THRESHOLD_DAY_TO_NIGHT is too big
+#endif
+#if LIGHT_SENSOR_THRESHOLD_NIGHT_TO_DAY <= 0
+#error LIGHT_SENSOR_THRESHOLD_NIGHT_TO_DAY is too small
+#endif
+#if LIGHT_SENSOR_THRESHOLD_NIGHT_TO_DAY >= 1023
+#error LIGHT_SENSOR_THRESHOLD_NIGHT_TO_DAY is too big
+#endif
+#if ENGINE_START_DETECT_DELAY_MS >= 32768
+#error ENGINE_START_DETECT_DELAY_MS is too big
+#endif
+#if HEADLIGHTS_SWITCH_DELAY_MS >= 32768
+#error HEADLIGHTS_SWITCH_DELAY_MS is too big
+#endif
 #define DEBUG // enable messages via UART
 
 
